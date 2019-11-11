@@ -11,11 +11,11 @@
 				  height='500px'
 				  transition="dialog-transition"
 				>
-					<img v-if='item.src!= "none"' :src="item.src" id='newsImg' class='mt-2' slot='activator'>
+					<template v-slot:activator="{ on }"><img v-if='item.src!= "none"' :src="item.src" id='newsImg' class='mt-2' v-on='on'></template>
 					<img :src="item.src" id='newsImg'>
 				</v-dialog>
 				<h2 class='font-weight-thin mt-3'>{{item.text}}</h2>
-				<v-btn flat @click='read' class='mt-4'>Читать в источнике</v-btn>
+				<v-btn text @click='read' class='mt-4'>Читать в источнике</v-btn>
 			</v-layout>
 		</v-container>
 		<v-divider class='mx-5'></v-divider>
@@ -43,7 +43,7 @@
 
 <script>
 import axios from 'axios'
-import Header from '@/components/Header'
+import Header from './Header/Header'
 
 export default {
 	data(){

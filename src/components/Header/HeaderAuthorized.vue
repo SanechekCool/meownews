@@ -1,6 +1,9 @@
 <template>
     <v-menu offset-x left :close-on-content-click="false">
-		<v-avatar :size="70" :tile='true' slot='activator' class='mr-4'><img :src="user.image"></v-avatar>
+		
+		<template v-slot:activator="{ on }">
+			<v-avatar :size="70" :tile='true' v-on='on' class='mr-4'><img :src="user.image"></v-avatar>
+		</template>
 		<v-card>
 			<v-list class='mr-4'>
 	          	<v-list-tile avatar>
@@ -8,16 +11,17 @@
 	          		  v-model="dialog"
 	          		  width="500px"
 	          		>
-	          			<v-list-tile-avatar :size='55' id='img' slot='activator'>
-		                	<img :src='user.image' class='mr-4'>
-		            	</v-list-tile-avatar>
+	          			
+							<template v-slot:activator="{ on }">
+								<v-list-tile-avatar :size='55' id='img' v-on='on'><img :src='user.image' class='mr-4'></v-list-tile-avatar>
+							</template>
 		            	<v-card>
 
 					        <v-card-title class="headline grey lighten-2" primary-title>Изменить аватар</v-card-title>
 					        <v-card-text>Выберите файл для загрузки</v-card-text>
 					        <v-divider></v-divider>
 					        <div id="dropbox" class='mt-3'>
-					          	<input type="file"accept="image/*" id="input-file" @change='imageChange'>
+					          	<input type="file" accept="image/*" id="input-file" @change='imageChange'>
 					          	<v-flex class='d-inline-flex ml-5'>
 					          		<v-icon large class='ml-4'>add_a_photo</v-icon>
 					          		<p class='mt-3 pl-2'>Перетащите файл для загрузки</p>
@@ -27,7 +31,7 @@
 					        <v-divider></v-divider>
 					        <v-card-actions v-if='!loading'>
 					            <v-spacer></v-spacer>
-					            <v-btn color="primary" flat @click="change">Изменить</v-btn>
+					            <v-btn color="primary" text @click="change">Изменить</v-btn>
 					        </v-card-actions>
 					        <v-card-actions v-else>
 					        	<v-alert v-if='error' type="error">
@@ -39,14 +43,14 @@
 					    </v-card>
 	          		</v-dialog>
 		            <v-list-tile-content>
-		                <v-list-tile-title>{{user.firstName}} {{user.lastName}}</v-list-tile-title>
+		                <v-list-tile-title>{{user.first_name}} {{user.last_name}}</v-list-tile-title>
 		                <v-list-tile-sub-title>{{user.username}}</v-list-tile-sub-title>
 		            </v-list-tile-content>
 		            
 		        </v-list-tile>
 	       	</v-list>
         	<v-divider></v-divider>
-          			<v-btn flat @click='signOut'>Выйти</v-btn>
+          			<v-btn text @click='signOut'>Выйти</v-btn>
           	</v-list>
 		</v-card>
 	</v-menu>
@@ -55,6 +59,7 @@
 <script>
 import cloudinary from 'cloudinary-core'
 import axios from 'axios'
+import { mapState } from 'vuex'
 
 export default {
 	name: 'HeaderAuthorized',
@@ -73,9 +78,7 @@ export default {
 		}
 	},
 	computed: {
-		user(){
-			return this.$root.user
-		}
+		...mapState(['user']),
 	},
 	methods: {
 		change(){
@@ -107,8 +110,7 @@ export default {
 			})
 		},
 		signOut(){
-			localStorage.token = ''
-			this.$root.user = null
+			this.$store.commit("signOut")
 		},
 		imageChange(e){
 			this.file = e.target.files[0]

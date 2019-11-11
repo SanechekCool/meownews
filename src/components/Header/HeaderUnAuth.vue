@@ -1,6 +1,7 @@
 <template>
 	<v-menu left offset-y :close-on-content-click="false">
-		<v-btn slot="activator" flat >Войти</v-btn>
+		<template v-slot:activator="{ on }"><v-btn v-on='on' text >Войти</v-btn></template>
+		
 	  	<v-card class='pa-3 pr-5' width='300' height='270'>
 			<v-text-field
 			  label="Имя пользователя"
@@ -14,22 +15,29 @@
 			  type='password'
 			  v-model='password'
 			></v-text-field>
-			<v-alert type="error" >
+			<v-alert dismissible type="error" v-if='err'>
 				{{err}}
 			</v-alert>
-			<v-btn v-if='!loading' flat @click='login' >Войти</v-btn>
+			<v-btn v-if='!loading' text @click='login' >Войти</v-btn>
 			<v-progress-circular v-else indeterminate color="black" class='mr-5 mb-1' :size='37'></v-progress-circular>
 			<v-dialog
 			  v-model="dialog"
-			  width="700"
+			  width="1000"
 			  transition="dialog-transition"
 			>
-				<v-btn color="blue accent-2" class='ml-2' dark  slot="activator">Создать аккаунт</v-btn>
-				<v-card class="elevation-2 ">
+				<template v-slot:activator="{ on }"><v-btn  class='ml-2' :color='color' dark v-on='on'>Создать аккаунт</v-btn></template>
+				
+				<v-card >
 					<v-toolbar dark :color="color" class='mb-2'>
 						<v-toolbar-title>Регистрация</v-toolbar-title>
 					</v-toolbar>
                      <v-row>
+						<v-col cols="12" sm="6">
+                           <v-text-field class='px-2' prepend-icon="mdi-account" label="Имя" v-model='firstName' :color='color' type="text"></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6">
+                            <v-text-field class='px-2' prepend-icon="mdi-email" label="Фамилия" v-model='lastName' :color='color' type="text"></v-text-field>
+                        </v-col>
                         <v-col cols="12" sm="6">
                            <v-text-field class='px-2' prepend-icon="mdi-account" label="Имя пользователя" v-model='usernameReg' :color='color' type="text"></v-text-field>
                         </v-col>
@@ -45,7 +53,6 @@
                     </v-row>
 					<v-card-actions>
 						<v-spacer></v-spacer>
-                        <small class='mr-4'>Уже есть аккаунт?&nbsp; <router-link to='/login'>Войти</router-link></small>
 						<v-btn :color="color" @click='signUp' dark>Зарегистрироваться</v-btn>
 					</v-card-actions>
 				</v-card>
@@ -57,6 +64,7 @@
 <script>
 import axios from 'axios'
 import cloudinary from 'cloudinary-core'
+import Auth from '../../modules/Auth'
 
 export default {
 	name: 'HeaderUnAuth',
@@ -69,7 +77,9 @@ export default {
 		       cloudName: 'dnkc78u1w'
 		    }, 
 			show: false,
-			color: 'primary',
+			lastName: '',
+			firstName: '',
+			color: '#448AFF',
 			passwordReg: '',
 			file: null,
 			imageSrc: '',
@@ -83,6 +93,8 @@ export default {
 			password: ''
 		}
 	},
+	computed: {
+	},
 	methods: {
 		fileChange(e){
 			this.file = e.target.files[0]
@@ -94,72 +106,28 @@ export default {
 	        	reader.readAsDataURL(this.file)
 	    	}
 		},
-		signIn(username, password){
-			axios({
-				method: 'post',
-				url: 'https://meowapi.herokuapp.com/api-token-auth/',
-				data: {
-					"username": username,
-					"password": password
-				}
-			})
-			.then((response) => {
-				localStorage.token = response.data.token
-				axios({
-		  			method: 'get',
-		  			url: 'https://meowapi.herokuapp.com/api/get-user-detail/',
-		  			headers: {
-		  				'Authorization': 'Token ' + response.data.token
-		  			}
-		  		})
-		  		.then((resp) => {
-		  			this.$root.user = {
-		  				firstName: resp.data.first_name,
-		  				image: resp.data.image,
-		  				lastName: resp.data.last_name,
-		  				email: resp.data.email,
-		  				id: resp.data.id,
-		  				username: resp.data.username
-		  			}
-		  		})			
-	  		})
-	  		.catch((err)=> {
-	  			this.err = err.message
-				this.loading = false
-			})	
+		async signIn(username, password){
+			const token = await Auth.signIn(username, password)
+			if (typeof token == "object") this.err = token
+			else this.$store.dispatch("GET_INFO", token)
+			this.loading = false
 		},
 		login(){
 			this.loading = true
 			this.signIn(this.username, this.password)
 			
 		},
-		signUp(){
+		async signUp(){
 			this.loading = true
 			const formData = new FormData()
 			formData.append('file', this.file)
 			formData.append('upload_preset', this.cloudinary.uploadPreset)
-			axios.post('https://api.cloudinary.com/v1_1/dnkc78u1w/upload', formData)
-			.then((res) => {
-				axios({
-					method: 'post',
-					url: 'https://meowapi.herokuapp.com/api/users/',
-					data : {
-						"username": this.usernameReg,
-						"email": this.emailReg,
-						"first_name": this.firstName,
-						"last_name": this.lastName,
-						"password": this.passwordReg,
-						"image": res.data.secure_url
-					}
-				})
-				.then(() => {
-					this.signIn(this.usernameReg, this.passwordReg)
-				})
-				.catch( (error) => {
-					this.loading = false
-					this.error = error.message 
-				}) 
-			})
+			let photoUrl = (await axios.post('https://api.cloudinary.com/v1_1/dnkc78u1w/upload', formData)).data.secure_url
+			const token = await Auth.signUp(this.emailReg, this.usernameReg, this.passwordReg, photoUrl, this.firstName, this.lastName);
+
+			if (typeof token == Object) this.err = token
+			else this.$store.dispatch("GET_INFO", token)	
+
 		}
 	}
 

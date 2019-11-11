@@ -15,27 +15,13 @@ new Vue({
     user: null
   },
   created(){
-    if (localStorage.token != undefined) {
-      axios({
-        method: 'get',
-        url: 'https://meowapi.herokuapp.com/api/get-user-detail/',
-        headers: {
-          'Authorization': 'Token ' + this.token
-        }
-      })
-      .then((response) => {
-        this.user = {
-          firstName: response.data.first_name,
-          lastName: response.data.last_name,
-          email: response.data.email,
-          username: response.data.username,
-          image: response.data.image,
-          id: response.data.id,
-          pas: response.data.password
-        }
-      })
-    }
-    else this.user = null
+    if (store.getters.loggedIn) {
+			store.dispatch("GET_INFO", localStorage.getItem("token"))
+		}
+		else {
+			localStorage.removeItem("token") 
+		}
+    
   },
   render: h => h(App)
 }).$mount('#app')
