@@ -4,15 +4,7 @@
   </v-app>
 </template>
 
+<style src='./assets/style.css'></style>
 
 
-<style >
-#app {
-  font-family: 'Montserrat', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-</style>
 

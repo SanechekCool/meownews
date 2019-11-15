@@ -162,23 +162,3 @@ export default {
 }
 </script>
 
-<style>
-	#theme{
-		color: #448AFF;
-	}
-	#theme:hover{
-		cursor: pointer;
-		border-bottom: 1px solid #448AFF;
-	}
-	#also-text-block{
-		height: 92px;
-		overflow: hidden;
-	    display: -webkit-box;
-	    -webkit-line-clamp: 5;
-	    -webkit-box-orient: vertical
-	}
-	#newsImg{
-		height: 500px;
-		width: 700px;
-	}
-</style>

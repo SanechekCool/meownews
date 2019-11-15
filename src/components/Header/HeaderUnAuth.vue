@@ -135,11 +135,5 @@ export default {
 </script>
 
 <style>
-	#file{
-		position: absolute;
-	    opacity: 0;
-	    outline: none;
-	    cursor: pointer;
-	    display: block;
-	}
+	
 </style>
