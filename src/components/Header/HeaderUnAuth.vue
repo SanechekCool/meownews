@@ -2,53 +2,67 @@
 	<v-menu left offset-y :close-on-content-click="false">
 		<template v-slot:activator="{ on }"><v-btn v-on='on' text >Войти</v-btn></template>
 		
-	  	<v-card class='pa-3 pr-5' width='300' height='270'>
+	  	<v-card class='pa-3 pr-5' >
 			<v-text-field
 			  label="Имя пользователя"
-			  solo
+			  outlined
+			  :color='color'
 			  v-model='username'
 			></v-text-field>
 			<v-text-field
 			  name="password"
 			  label="Пароль"
-			  solo
+			  outlined
+			  :color='color'
 			  type='password'
 			  v-model='password'
 			></v-text-field>
-			<v-alert dismissible type="error" v-if='err'>
-				{{err}}
+			<v-alert type="error" v-if='err'>
+				{{ err }}
 			</v-alert>
-			<v-btn v-if='!loading' text @click='login' >Войти</v-btn>
-			<v-progress-circular v-else indeterminate color="black" class='mr-5 mb-1' :size='37'></v-progress-circular>
+			<v-row v-if='!loading' >
+				<v-col cols='4'>
+					<v-btn text @click='login' >Войти</v-btn>
+				</v-col>
+				<v-col cols='8'>
+					<v-btn  class='ml-2' :color='color' dark  @click='dialog = true'>Создать аккаунт</v-btn>
+				</v-col>
+			</v-row>
+			
+			<div v-else class='d-flex justify-center align-center'>
+				<v-avatar
+					size="50"
+				>
+					<img src="../../assets/logo.svg"  id='animation-logo' alt="alt">
+				</v-avatar>
+			</div>
 			<v-dialog
 			  v-model="dialog"
-			  width="1000"
+			  width="1200"
 			  transition="dialog-transition"
 			>
-				<template v-slot:activator="{ on }"><v-btn  class='ml-2' :color='color' dark v-on='on'>Создать аккаунт</v-btn></template>
-				
 				<v-card >
 					<v-toolbar dark :color="color" class='mb-2'>
 						<v-toolbar-title>Регистрация</v-toolbar-title>
 					</v-toolbar>
                      <v-row>
 						<v-col cols="12" sm="6">
-                           <v-text-field class='px-2' prepend-icon="mdi-account" label="Имя" v-model='firstName' :color='color' type="text"></v-text-field>
+                           <v-text-field class='px-2' name='name' prepend-icon="mdi-face" label="Имя" v-model='firstName' :color='color' type="text"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6">
-                            <v-text-field class='px-2' prepend-icon="mdi-email" label="Фамилия" v-model='lastName' :color='color' type="text"></v-text-field>
+                            <v-text-field class='px-2' name='surname' prepend-icon="mdi-face" label="Фамилия" v-model='lastName' :color='color' type="text"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6">
-                           <v-text-field class='px-2' prepend-icon="mdi-account" label="Имя пользователя" v-model='usernameReg' :color='color' type="text"></v-text-field>
+                           <v-text-field class='px-2' name='username' prepend-icon="mdi-account" label="Имя пользователя" v-model='usernameReg' :color='color' type="text"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6">
-                            <v-text-field class='px-2' prepend-icon="mdi-email" label="E-Mail" v-model='email' :color='color' type="text"></v-text-field>
+                            <v-text-field class='px-2' name='email' prepend-icon="mdi-email" label="E-Mail" v-model='email' :color='color' type="text"></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6">
                              <v-file-input class='px-2' type="file" accept="image/*"  v-model='file' prepend-icon="mdi-camera" :color='color' label="Фото профиля"></v-file-input>
                         </v-col>
                         <v-col cols="12" sm="6">
-                            <v-text-field class='px-2' prepend-icon="mdi-key" label="Пароль" v-model='password' :color='color' type="password" @keyup.enter='register'></v-text-field>
+                            <v-text-field class='px-2'  prepend-icon="mdi-key" label="Пароль" v-model='password' :color='color' type="password" @keyup.enter='register'></v-text-field>
                         </v-col>
                     </v-row>
 					<v-card-actions>
@@ -125,7 +139,7 @@ export default {
 			let photoUrl = (await axios.post('https://api.cloudinary.com/v1_1/dnkc78u1w/upload', formData)).data.secure_url
 			const token = await Auth.signUp(this.emailReg, this.usernameReg, this.passwordReg, photoUrl, this.firstName, this.lastName);
 
-			if (typeof token == Object) this.err = token
+			if (typeof token == "object") this.err = token
 			else this.$store.dispatch("GET_INFO", token)	
 
 		}

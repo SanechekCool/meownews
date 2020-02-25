@@ -1,15 +1,22 @@
+@import url('./animations.css');
+
+
 #app {
-    font-family: 'Montserrat', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
 }
+
 #file{
     position: absolute;
     opacity: 0;
     outline: none;
     cursor: pointer;
     display: block;
+}
+
+#animation-logo{
+    animation: load 1s infinite alternate;
 }
 
 #theme{
@@ -20,28 +27,13 @@
     cursor: pointer;
     border-bottom: 1px solid #448AFF;
 }
-#also-text-block{
-    height: 92px;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical
-}
+
 #newsImg{
     height: 500px;
     width: 700px;
 }
 
 
-#text{
-    height: 120px;
-}
-#text2{
-    height: 160px;
-}
-#card:hover{
-    cursor: pointer;
-}
 #city{
     color: #448AFF;
 }
@@ -50,24 +42,9 @@
     border-bottom: 1px solid #448AFF;	
 }
 
-#image-block {
-    text-align: center;
-}
 
-#mostviewed-text-block{
-    height: 92px;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical
-}
-#text-title{
-    height: 80px;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 14;
-    -webkit-box-orient: vertical
-}
+
+
 
 
 
@@ -77,3 +54,4 @@
         height: 90px;
     }
 }
+

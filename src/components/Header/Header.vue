@@ -1,14 +1,14 @@
 <template>
 	<v-toolbar :color='color' height='90'>
-		<img src="/Logo.png" id='header' class='ml-3' style='width:40px;height: 40px;' @click='goHome'>
+		<img src="../../assets/logo.svg" id='header' class='ml-3' style='width:65px;height: 65px;' @click='goHome'>
 		<v-toolbar-title id='header' class='display-2 ml-3' @click='goHome'>MeowNews</v-toolbar-title>
-		<v-spacer></v-spacer>
+		<!-- <v-spacer></v-spacer>
 		<v-toolbar-items v-if='!loggedIn'>
 			<HeaderUnAuth />
 		</v-toolbar-items>
 		<v-toolbar-items v-else>
 			<HeaderAuthorized />
-		</v-toolbar-items>
+		</v-toolbar-items> -->
 	</v-toolbar>
 </template>
 

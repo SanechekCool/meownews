@@ -9,7 +9,7 @@ export default new Vuex.Store({
 		domain: 'https://meowapi.herokuapp.com/api',
 		user: {},
 		color: "#E0E0E0",
-		textColor: '#448AFF'
+		textColor: '#448AFF',
 		
 	},
 	getters: {
