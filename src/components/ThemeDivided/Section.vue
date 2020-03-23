@@ -68,7 +68,7 @@
                             dark
                             >
                                 <v-layout  align-center justify-center row fill-height>
-                                    <h1 v-if='!loading' class='display-3 font-weight-thin'>Загрузить еще</h1>
+                                    <h1 v-if='!loader' class='display-3 font-weight-thin'>Загрузить еще</h1>
                                     <v-progress-circular v-else
                                     indeterminate
                                     color="white"
