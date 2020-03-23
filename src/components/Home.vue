@@ -31,7 +31,7 @@
 			</v-tab>
 			<v-tab class='ml-5' href='#tab-economy'>
 				Экономика
-				<v-icon>mdi-square-inc-cash</v-icon>
+				<v-icon>mdi-cash</v-icon>
 			</v-tab>
 			<v-tab class='ml-5' href='#tab-world'>
 				В мире

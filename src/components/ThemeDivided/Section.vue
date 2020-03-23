@@ -1,11 +1,12 @@
 <template>
 	<div>
-		<div v-if='loading' justify='center'>
-			<v-progress-circular 
-				indeterminate
-				color="black"
-			></v-progress-circular>
-		</div>
+		<div v-if='loading' class='d-flex justify-center align-center' style='height: 700px'>
+            <v-avatar
+                size="100"
+            >
+                <img src="../../assets/logo.svg"  id='animation-logo' alt="alt">
+            </v-avatar>
+        </div>
 		<div else>
 			<v-container fluid >
                 <h1 v-if='!loading' class='display-3 font-weight-thin my-12 ml-12 text-center'>{{ Helper.getTheme(theme) }}</h1>
@@ -55,7 +56,8 @@
                             </v-hover>
                         </v-col>
                     </v-row>
-                    <v-col v-if='!loading' cols='12'>
+                    
+                    <v-col v-if='news.length > 0' cols='12'>
                         <v-hover>
                             <v-card 
                             @click='loadMore' 
@@ -65,8 +67,8 @@
                             :color='textColor' 
                             dark
                             >
-                                <v-layout align-center justify-center row fill-height>
-                                    <h1 v-if='!loader' class='display-3 font-weight-thin'>Загрузить еще</h1>
+                                <v-layout  align-center justify-center row fill-height>
+                                    <h1 v-if='!loading' class='display-3 font-weight-thin'>Загрузить еще</h1>
                                     <v-progress-circular v-else
                                     indeterminate
                                     color="white"
@@ -74,6 +76,11 @@
                                 </v-layout>
                             </v-card>
                         </v-hover>
+                    </v-col>
+                    <v-col v-if='news.length == 0 && !loading' >
+                        <v-layout  align-center justify-center row fill-height>
+                            <p class='display-1 font-weight-thin ml-10'>Новостей нет</p>
+                        </v-layout>
                     </v-col>
                 </v-container>
             </v-container>
@@ -93,7 +100,7 @@ export default {
 	data() {
 		return {
 			loader: false,
-			loading: true,
+			loading: false,
             news: [],
             Helper: Helper,
 			next: ''
@@ -119,6 +126,7 @@ export default {
 		
 	},
 	async mounted(){
+        this.loading = true
         let domain 
         if (this.theme == 'home') domain = this.domain + '/articles/';
         else domain = this.domain + '/articles/filter/theme/' + this.theme + '/'
